@@ -1,0 +1,1 @@
+This is a project in the foundations course of the-odin-project.
