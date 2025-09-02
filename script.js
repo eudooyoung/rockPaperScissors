@@ -1,5 +1,4 @@
 function getComputerChoice() {
-  // get a random number between 0 - 2 and save the value in the variable "choice"
   let choice = Math.floor(Math.random() * 3);
 
   // return "rock" if choice equals 0
@@ -8,70 +7,55 @@ function getComputerChoice() {
   return choice === 0 ? "rock" : choice === 1 ? "paper" : "scissors";
 }
 
-function getHumanChoice() {
-  // get an input from a player and save it in "choice"
-  let choice = prompt("Rock, Paper, Scissors!");
-
-  return choice;
-}
-
 function playRound(humanChoice, computerChoice) {
-  // declare a variable to store the result
-  let result;
+  let result = [];
 
-  // compare humanChoice with computerChoice by its cases
   switch (humanChoice) {
     case "rock":
       switch (computerChoice) {
         case "scissors":
-          // if the player wins, log the winning statement
-          console.log("You win! Rock beats scissors");
-          // store "win" in the "result" variable
-          result = "win";
+          result.push("You win! Rock beats scissors");
+          result.push("win");
           break;
         case "paper":
-          // if computer wins, log the losing statement
-          console.log("You lose! Paper beats rock.");
-          // store "lose" in the "result" variable
-          result = "lose";
+          result.push("You lose! Paper beats rock.");
+          result.push("lose");
           break;
         case "rock":
-          // if draws, log the draw statement
-          console.log("Draw!");
-          // store "draw" in the "result" variable
-          result = "draw";
+          result.push("Draw!");
+          result.push("draw");
           break;
       }
       break;
     case "paper":
       switch (computerChoice) {
         case "rock":
-          console.log("You win! Paper beats rock");
-          result = "win";
+          result.push("You win! Paper beats rock");
+          result.push("win");
           break;
         case "scissors":
-          console.log("You lose! Scissors beats paper.");
-          result = "lose";
+          result.push("You lose! Scissors beats paper.");
+          result.push("lose");
           break;
         case "paper":
-          console.log("Draw!");
-          result = "draw";
+          result.push("Draw!");
+          result.push("draw");
           break;
       }
       break;
     case "scissors":
       switch (computerChoice) {
         case "paper":
-          console.log("You win! Scissors beats paper");
-          result = "win";
+          result.push("You win! Scissors beats paper");
+          result.push("win");
           break;
         case "rock":
-          console.log("You lose! Rock beats paper.");
-          result = "lose";
+          result.push("You lose! Rock beats paper.");
+          result.push("lose");
           break;
         case "scissors":
-          console.log("Draw!");
-          result = "draw";
+          result.push("Draw!");
+          result.push("draw");
           break;
       }
       break;
@@ -80,53 +64,76 @@ function playRound(humanChoice, computerChoice) {
   return result;
 }
 
-function playGame() {
-  // declare variables for scores
-  let humanScore = 0;
-  let computerScore = 0;
-
-  // repeat the round 5 times
-  for (let i = 0; i < 5; i++) {
-    // at each round, get new choices
-    // convert the player input to lower case so that it takes inputs case-insensitively
-    let humanChoice = getHumanChoice().toLowerCase();
-    let computerChoice = getComputerChoice();
-    switch (playRound(humanChoice, computerChoice)) {
-      // if the return value equals "win", increment humanScore by 1
-      case "win":
-        humanScore++;
-        break;
-      // if the return value equals "lose", increment computerScore by 1
-      case "lose":
-        computerScore++;
-        break;
-      // do nothing otherwise
-      default:
-        break;
-    }
-  }
-
-  console.log("Final result: \n");
-  // if humanScore is greater than computerScore, log final winning statement
-  // along with the score history
-  if (humanScore > computerScore) {
-    console.log("You win! :D");
-    console.log(`final result:
-    your score: ${humanScore}
-    computer score: ${computerScore}`);
-    // if computerScore is greater than humanScore, log final lose statement
-  } else if (computerScore > humanScore) {
-    console.log("You lose... :\\");
-    console.log(`final result:
-    your score: ${humanScore}
-    computer score: ${computerScore}`);
-  } else {
-    // log draw statement otherwise
-    console.log("It's a tie :b");
-    console.log(`final result:
-    your score: ${humanScore}
-    computer score: ${computerScore}`);
+function playGame(roundResult) {
+  switch (roundResult) {
+    case "win":
+      humanScore++;
+      break;
+    case "lose":
+      computerScore++;
+      break;
+    default:
+      break;
   }
 }
 
-playGame();
+const rock = document.querySelector("#rock");
+const paper = document.querySelector("#paper");
+const scissors = document.querySelector("#scissors");
+const clear = document.querySelector("#clear");
+
+const buttons = document.querySelectorAll(".choice");
+const buttonDiv = document.querySelector(".button-div");
+buttonDiv.style.textAlign = "center";
+
+const result = document.querySelector(".result");
+result.setAttribute(
+  "style",
+  "padding : 20px 400px; display : flex; justify-content: space-between;"
+);
+
+const statement = document.querySelector(".statement");
+statement.setAttribute("style", "flex-basis: 400px");
+const score = document.querySelector(".score");
+score.setAttribute("style", "flex-basis: 400px");
+
+let humanScore = 0;
+let computerScore = 0;
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const humanChoice = button.textContent.toLowerCase();
+    const computerChoice = getComputerChoice();
+
+    const roundResult = document.createElement("div");
+    roundResult.textContent = playRound(humanChoice, computerChoice).at(0);
+    statement.appendChild(roundResult);
+
+    const runningScore = document.createElement("div");
+
+    playGame(playRound(humanChoice, computerChoice).at(1));
+
+    if (humanScore < 5 && computerScore < 5) {
+      runningScore.textContent = `Current score >>> Your score ${humanScore} : Computer score ${computerScore}`;
+    } else if (humanScore == 5) {
+      runningScore.setAttribute("style", "font-weight: bold");
+      runningScore.textContent = `You Win!! >>> Your score ${humanScore} : Computer score ${computerScore}`;
+      humanScore = 0;
+      computerScore = 0;
+    } else {
+      runningScore.setAttribute("style", "font-weight: bold");
+      runningScore.textContent = `Computer Win!! >>> Your score ${humanScore} : Computer score ${computerScore}`;
+      humanScore = 0;
+      computerScore = 0;
+    }
+
+    score.appendChild(runningScore);
+  });
+
+  reset.addEventListener("click", () => {
+    const statements = document.querySelectorAll(".statement div");
+    statements.forEach((roundResult) => roundResult.remove());
+    const scores = document.querySelectorAll(".score div");
+    scores.forEach((runningResult) => runningResult.remove());
+  });
+});
